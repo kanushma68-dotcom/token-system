@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Management System | Passport Office</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#14305a;--navy2:#0e2342;--ink:#1b2733;--mute:#5f6f7c;--bg:#eef1f5;--card:#fff;--line:#d5dde5;--saf:#e8890c;--saf-s:#fdf0dc;--grn:#1c7c54;--red:#b42318;--blue-s:#e6edf7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Public Sans","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.tricolor{height:5px;background:linear-gradient(90deg,#e8890c 33%,#fff 33% 66%,#1c7c54 66%)}
+header.top{background:var(--navy);color:#fff}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.bar{display:flex;align-items:center;gap:14px;padding:14px 0;flex-wrap:wrap}
+.logo{width:42px;height:42px;border-radius:50%;border:2px solid var(--saf);display:grid;place-items:center;font-weight:800;color:var(--saf)}
+.bar h1{margin:0;font-size:1.2rem;font-weight:700}
+.bar small{display:block;color:#b8c7de;font-size:.8rem}
+.sp{flex:1}
+.clock{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.clock small{display:block}
+.pill{padding:5px 12px;border-radius:99px;font-size:.8rem;font-weight:700;background:#fff2;border:1px solid #fff4}
+.pill.full{background:var(--red);border-color:var(--red)}
+.pill.open{background:var(--grn);border-color:var(--grn)}
+main{padding:22px 0 40px}
+.g{display:grid;gap:18px;margin-bottom:18px}
+.g.a{grid-template-columns:5fr 7fr}.g.b{grid-template-columns:5fr 7fr}.g.c{grid-template-columns:1fr 1fr}
+@media(max-width:900px){.g.a,.g.b,.g.c{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 1px 2px #14305a10}
+.card h2{margin:0 0 12px;font-size:1rem;color:var(--navy);display:flex;align-items:center;gap:8px}
+.card h2 span{font-weight:500;color:var(--mute);font-size:.82rem}
+.serving{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;border:0;display:flex;flex-direction:column;justify-content:space-between;min-height:340px}
+.serving .lab{color:#b8c7de;font-size:.9rem}
+.serving .num{font-size:6.5rem;font-weight:800;line-height:1;margin:6px 0;font-variant-numeric:tabular-nums;color:var(--saf)}
+.serving .who{font-size:1.5rem;font-weight:600;min-height:36px}
+.next{border-top:1px solid #fff3;padding-top:12px;color:#b8c7de;font-size:.92rem}
+.next b{color:#fff}
+.flash{animation:fl .5s}@keyframes fl{from{transform:scale(1.08);opacity:.4}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.flash{animation:none}}
+#ring{width:100%;max-height:360px;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--mute);justify-content:center}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+label{display:block;font-size:.84rem;color:var(--mute);margin-bottom:4px;font-weight:500}
+input[type=text],input[type=number],textarea{width:100%;padding:10px 11px;font:inherit;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+textarea{font-family:Consolas,"Courier New",monospace;font-size:.88rem}
+input[type=range]{width:100%;accent-color:var(--navy)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:end}
+.row>.f{flex:1 1 150px}
+button{padding:10px 16px;font:inherit;font-weight:600;border-radius:8px;cursor:pointer;border:1px solid var(--navy);background:var(--navy);color:#fff}
+button.sec{background:#fff;color:var(--navy)}button.acc{background:var(--saf);border-color:var(--saf);color:#1b1200}
+button:hover{filter:brightness(1.08)}
+:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+.st{background:var(--blue-s);border-radius:10px;padding:10px 12px}
+.st b{display:block;font-size:1.5rem;font-variant-numeric:tabular-nums}.st span{font-size:.76rem;color:var(--mute)}
+.meter{height:10px;background:var(--blue-s);border-radius:9px;overflow:hidden;margin:6px 0 14px}
+.meter div{height:100%;background:var(--navy);width:0;transition:width .3s}
+.strip{display:flex;flex-wrap:wrap;gap:6px}
+.cell{width:58px;border:2px solid var(--line);border-radius:8px;text-align:center;padding:3px 2px;font-size:.72rem;background:#f8fafb}
+.cell em{display:block;font-style:normal;color:var(--mute);font-size:.66rem}
+.cell b{display:block;font-size:.95rem}
+.cell.u{background:var(--blue-s);border-color:var(--navy)}.cell.f{background:var(--saf-s);border-color:var(--saf)}
+.cell .t{display:block;min-height:13px;font-weight:700;color:var(--navy);font-size:.66rem}
+.ticket{display:flex;border:1px dashed var(--mute);border-radius:10px;margin-top:14px;overflow:hidden;background:var(--saf-s);min-height:78px}
+.ticket .l{padding:10px 16px;background:var(--saf);color:#1b1200;font-weight:800;font-size:1.6rem;display:grid;place-items:center;min-width:86px}
+.ticket .r{padding:10px 14px;font-size:.9rem}.ticket .r b{display:block;font-size:1.05rem}
+#log{margin:0;background:#101d2a;color:#d8e5ee;border-radius:10px;height:260px;overflow:auto;padding:8px 0;font-family:Consolas,"Courier New",monospace;font-size:.85rem}
+#log div{padding:3px 12px;border-left:3px solid #3b5b78;display:flex;gap:10px}
+#log time{color:#7f98ad;flex:none}
+#log .ok{border-color:#3fb67f}#log .err{border-color:#ef6b5f;color:#ffb7b0}#log .inf{border-color:var(--saf)}
+.tools{display:flex;gap:8px;margin-top:10px}
+.sum{margin-left:auto;font-weight:700;font-size:.9rem}
+.test{border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+.test .nm{flex:1 1 200px}
+.bd{font-weight:800;min-width:46px;text-align:center}.bd.pass{color:var(--grn)}.bd.fail{color:var(--red)}
+.test button{padding:5px 10px;font-size:.82rem}
+.diff{flex-basis:100%;font-family:Consolas,monospace;font-size:.78rem;color:var(--red);white-space:pre-wrap}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:800px){.how{grid-template-columns:1fr}}
+.how div{border-left:4px solid var(--saf);padding-left:12px}.how h3{margin:0 0 4px;font-size:.95rem;color:var(--navy)}
+.how p{margin:0;font-size:.88rem;color:var(--mute)}
+code{background:var(--blue-s);padding:1px 6px;border-radius:5px;font-size:.84rem}
+footer{background:var(--navy2);color:#b8c7de;text-align:center;padding:16px;font-size:.85rem}
+#toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:11px 16px;border-radius:9px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;max-width:320px;font-size:.9rem}
+#toast.on{opacity:1;transform:none}#toast.err{background:var(--red)}
+</style>
+</head>
+<body>
+<div class="tricolor"></div>
+<header class="top"><div class="wrap bar">
+  <div class="logo">PO</div>
+  <div><h1>Passport Office Token Counter</h1><small>Waiting hall management, circular queue</small></div>
+  <div class="sp"></div>
+  <span class="pill" id="pill">Hall empty</span>
+  <div class="clock"><span id="clk"></span><small id="dt"></small></div>
+</div></header>
+
+<main class="wrap">
+  <div class="g a">
+    <section class="card serving" aria-live="polite">
+      <div>
+        <div class="lab">Now serving</div>
+        <div class="num" id="nowNum">--</div>
+        <div class="who" id="nowWho">Counter is free</div>
+      </div>
+      <div class="next" id="nextUp">No one waiting</div>
+    </section>
+    <section class="card">
+      <h2>Waiting hall <span id="ringNote"></span></h2>
+      <svg id="ring" viewBox="0 0 360 340" role="img" aria-label="Circular queue of seats"></svg>
+      <div class="legend"><span><i style="background:#e6edf7;border:2px solid #14305a"></i>Occupied</span><span><i style="background:#fdf0dc;border:2px solid #e8890c"></i>Front (next)</span><span><i style="background:#fff;border:2px solid #d5dde5"></i>Free seat</span></div>
+    </section>
+  </div>
+
+  <div class="g b">
+    <section class="card">
+      <h2>Service counter</h2>
+      <label for="cap">Hall capacity: <b id="capv">3</b> seats</label>
+      <input id="cap" type="range" min="1" max="100" value="3">
+      <div class="row"><button class="sec" id="create">Create hall (resets)</button></div>
+      <div class="row">
+        <div class="f"><label for="name">Applicant name</label><input id="name" type="text" maxlength="30" placeholder="e.g. Priya"></div>
+        <button id="issue" class="acc">ISSUE token</button>
+      </div>
+      <div class="row"><button id="serve">SERVE next</button><button class="sec" id="show">SHOW board</button></div>
+      <div class="ticket" id="ticket"><div class="l">--</div><div class="r"><b>No token issued yet</b>Last issued token appears here.</div></div>
+    </section>
+    <section class="card">
+      <h2>Status board <span>front, rear and size</span></h2>
+      <div class="stats">
+        <div class="st"><b id="sFront">-1</b><span>front</span></div>
+        <div class="st"><b id="sRear">-1</b><span>rear</span></div>
+        <div class="st"><b id="sSize">0</b><span>size</span></div>
+        <div class="st"><b id="sCap">3</b><span>capacity</span></div>
+      </div>
+      <label>Hall occupancy <b id="occ">0%</b></label>
+      <div class="meter"><div id="meter"></div></div>
+      <div class="stats">
+        <div class="st"><b id="cIss">0</b><span>tokens issued</span></div>
+        <div class="st"><b id="cSrv">0</b><span>people served</span></div>
+        <div class="st"><b id="cRej">0</b><span>turned away</span></div>
+        <div class="st"><b id="cNxt">T1</b><span>next token no.</span></div>
+      </div>
+      <div class="strip" id="strip"></div>
+    </section>
+  </div>
+
+  <div class="g c">
+    <section class="card">
+      <h2>Activity log <span>exact program output</span></h2>
+      <div id="log"></div>
+      <div class="tools"><button class="sec" id="copy">Copy output</button><button class="sec" id="clear">Clear</button></div>
+    </section>
+    <section class="card">
+      <h2>Batch runner <span>same format as the problem sheet</span></h2>
+      <textarea id="batch" rows="10">3
+ISSUE a
+ISSUE b
+ISSUE c
+ISSUE d
+SERVE
+ISSUE e
+SHOW</textarea>
+      <div class="row"><button id="runBatch">Run batch</button></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-bottom:18px">
+    <h2>Test cases <span>from the problem sheet</span><b class="sum" id="sum"></b></h2>
+    <div class="row" style="margin:0 0 10px"><button id="runAll">Run all tests</button></div>
+    <div id="tests"></div>
+  </section>
+
+  <section class="card">
+    <h2>How the circular queue works</h2>
+    <div class="how">
+      <div><h3>ISSUE</h3><p>If size equals N the hall is full. Otherwise <code>rear = (rear + 1) % N</code>, and the first arrival sets front = rear = 0. The token number only increases on success.</p></div>
+      <div><h3>SERVE</h3><p>If size is 0 the queue is empty. Otherwise take the item at front, then <code>front = (front + 1) % N</code>. When the last person leaves, front and rear reset to -1.</p></div>
+      <div><h3>Complexity</h3><p>ISSUE and SERVE are O(1). SHOW is O(size). The array has fixed size N, so no space is wasted as seats are reused.</p></div>
+    </div>
+  </section>
+</main>
+<footer>CS25C08 Data Structures - Project Based Learning | Problem 8: Token Management System (Queue: circular queue)</footer>
+<div id="toast"></div>
+
+<script>
+class TokenQueue{
+  constructor(n){this.cap=n;this.arr=new Array(n).fill(null);this.front=-1;this.rear=-1;this.size=0;this.next=1;this.iss=0;this.srv=0;this.rej=0;this.last=null;this.lastIssued=null}
+  issue(name){
+    if(this.size===this.cap){this.rej++;return null}
+    if(this.size===0){this.front=0;this.rear=0}else this.rear=(this.rear+1)%this.cap;
+    const it={tk:"T"+this.next++,name};this.arr[this.rear]=it;this.size++;this.iss++;this.lastIssued=it;return it}
+  serve(){
+    if(this.size===0)return null;
+    const it=this.arr[this.front];this.arr[this.front]=null;
+    if(this.size===1){this.front=-1;this.rear=-1}else this.front=(this.front+1)%this.cap;
+    this.size--;this.srv++;this.last=it;return it}
+  show(){
+    const t=" | front="+this.front+" rear="+this.rear+" size="+this.size;
+    if(!this.size)return "Queue: empty"+t;
+    const p=[];for(let k=0;k<this.size;k++){const i=this.arr[(this.front+k)%this.cap];p.push(i.tk+"("+i.name+")")}
+    return "Queue: "+p.join(" ")+t}
+  exec(line){
+    line=line.trim();if(!line)return null;
+    const sp=line.indexOf(" "),cmd=(sp<0?line:line.slice(0,sp)).toUpperCase(),arg=sp<0?"":line.slice(sp+1).trim();
+    if(cmd==="ISSUE"){if(!arg)return "Invalid command: ISSUE needs a name";const it=this.issue(arg);return it?"Issued "+it.tk+" to "+arg:"Queue full - cannot issue to "+arg}
+    if(cmd==="SERVE"){const it=this.serve();return it?"Serving "+it.tk+" ("+it.name+")":"Queue empty"}
+    if(cmd==="SHOW")return this.show();
+    return "Invalid command: "+line}
+}
+function runInput(text){
+  const L=text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  if(!L.length)return{error:"Input is empty."};
+  const n=parseInt(L[0],10);
+  if(!(n>=1&&n<=100))return{error:"Capacity must be between 1 and 100."};
+  const q=new TokenQueue(n),out=[];for(let i=1;i<L.length;i++)out.push(q.exec(L[i]));
+  return{q,out}}
+
+const $=id=>document.getElementById(id);
+let S=new TokenQueue(3),logLines=[];
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,txt){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!==undefined)e.textContent=txt;return e}
+
+function kind(t){return /^(Queue full|Queue empty|Invalid)/.test(t)?"err":/^Queue:/.test(t)?"inf":"ok"}
+function addLog(t){
+  logLines.push(t);
+  const d=document.createElement("div");d.className=kind(t);
+  const tm=document.createElement("time");tm.textContent=new Date().toLocaleTimeString([], {hour12:false});
+  const s=document.createElement("span");s.textContent=t;d.append(tm,s);$("log").appendChild(d);$("log").scrollTop=1e9}
+function toast(m,err){const t=$("toast");t.textContent=m;t.className="on"+(err?" err":"");clearTimeout(toast.h);toast.h=setTimeout(()=>t.className="",2200)}
+
+function renderRing(){
+  const q=S,svg=$("ring");svg.innerHTML="";
+  const cx=180,cy=160,R=q.cap===1?0:118,N=q.cap;
+  const r=N===1?60:Math.min(30,Math.sin(Math.PI/N)*R*0.9);
+  svg.appendChild(el("circle",{cx,cy,r:R||1,fill:"none",stroke:"#d5dde5","stroke-dasharray":"4 5"}));
+  svg.appendChild(el("text",{x:cx,y:cy+2,"text-anchor":"middle","font-size":26,"font-weight":800,fill:"#14305a"},q.size+" / "+N));
+  svg.appendChild(el("text",{x:cx,y:cy+22,"text-anchor":"middle","font-size":11,fill:"#5f6f7c"},"seats taken"));
+  for(let i=0;i<N;i++){
+    const a=i*2*Math.PI/N-Math.PI/2,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),it=q.arr[i];
+    const isF=it&&i===q.front;
+    svg.appendChild(el("circle",{cx:x,cy:y,r,fill:isF?"#fdf0dc":it?"#e6edf7":"#fff",stroke:isF?"#e8890c":it?"#14305a":"#d5dde5","stroke-width":2.5}));
+    if(r>=14){
+      svg.appendChild(el("text",{x,y:y+(it?-1:4),"text-anchor":"middle","font-size":it?Math.min(13,r*.55):9,"font-weight":700,fill:it?"#14305a":"#9aa8b3"},it?it.tk:i));
+      if(it&&r>=20)svg.appendChild(el("text",{x,y:y+11,"text-anchor":"middle","font-size":8.5,fill:"#5f6f7c"},it.name.slice(0,6)))}
+    const lab=[];if(i===q.front&&q.size)lab.push("F");if(i===q.rear&&q.size)lab.push("R");
+    if(lab.length&&N>1){const ox=cx+(R+r+14)*Math.cos(a),oy=cy+(R+r+14)*Math.sin(a);
+      svg.appendChild(el("text",{x:ox,y:oy+4,"text-anchor":"middle","font-size":12,"font-weight":800,fill:"#e8890c"},lab.join("/")))}}
+  $("ringNote").textContent="F = front, R = rear"}
+
+function render(){
+  const q=S;
+  $("sFront").textContent=q.front;$("sRear").textContent=q.rear;$("sSize").textContent=q.size;$("sCap").textContent=q.cap;
+  const pc=Math.round(q.size/q.cap*100);$("occ").textContent=pc+"%";$("meter").style.width=pc+"%";
+  $("cIss").textContent=q.iss;$("cSrv").textContent=q.srv;$("cRej").textContent=q.rej;$("cNxt").textContent="T"+q.next;
+  const p=$("pill");p.className="pill"+(q.size===q.cap?" full":q.size?" open":"");
+  p.textContent=q.size===q.cap?"Hall full":q.size?"Open: "+q.size+" waiting":"Hall empty";
+  $("nowNum").textContent=q.last?q.last.tk:"--";$("nowWho").textContent=q.last?q.last.name:"Counter is free";
+  const nx=q.size?q.arr[q.front]:null;
+  $("nextUp").innerHTML="";
+  if(nx){$("nextUp").append("Next in line: ");const b=document.createElement("b");b.textContent=nx.tk+" ("+nx.name+")";$("nextUp").append(b)}else $("nextUp").textContent="No one waiting";
+  const tk=$("ticket");tk.innerHTML="";
+  const l=document.createElement("div");l.className="l";l.textContent=q.lastIssued?q.lastIssued.tk:"--";
+  const r=document.createElement("div");r.className="r";const b=document.createElement("b");
+  b.textContent=q.lastIssued?q.lastIssued.name:"No token issued yet";
+  r.append(b,q.lastIssued?"Last issued token":"Last issued token appears here.");tk.append(l,r);
+  const st=$("strip");st.innerHTML="";
+  q.arr.forEach((it,i)=>{const c=document.createElement("div");c.className="cell"+(it?" u":"")+(it&&i===q.front?" f":"");
+    const a=document.createElement("em");a.textContent="["+i+"]";
+    const t=document.createElement("span");t.className="t";t.textContent=[i===q.front&&q.size?"front":"",i===q.rear&&q.size?"rear":""].filter(Boolean).join("/");
+    const v=document.createElement("b");v.textContent=it?it.tk:"-";c.append(a,t,v);st.appendChild(c)});
+  renderRing()}
+
+function flashNow(){const n=$("nowNum");n.classList.remove("flash");void n.offsetWidth;n.classList.add("flash")}
+function cmd(line){const res=S.exec(line);if(res===null)return;addLog(res);
+  if(kind(res)==="err")toast(res,true);render();return res}
+
+function createHall(){const n=+$("cap").value;S=new TokenQueue(n);logLines=[];$("log").innerHTML="";addLog("Hall created. capacity="+n);render()}
+$("cap").oninput=()=>$("capv").textContent=$("cap").value;
+$("create").onclick=createHall;
+$("issue").onclick=()=>{const n=$("name").value.trim();if(!n){toast("Enter the applicant's name first.",true);return}
+  cmd("ISSUE "+n);$("name").value="";$("name").focus()};
+$("name").addEventListener("keydown",e=>{if(e.key==="Enter")$("issue").click()});
+$("serve").onclick=()=>{const r=cmd("SERVE");if(r&&r.startsWith("Serving"))flashNow()};
+$("show").onclick=()=>cmd("SHOW");
+$("clear").onclick=()=>{logLines=[];$("log").innerHTML=""};
+$("copy").onclick=()=>{navigator.clipboard.writeText(logLines.join("\n")).then(()=>toast("Output copied."),()=>toast("Copy not available.",true))};
+
+function loadResult(r){
+  logLines=[];$("log").innerHTML="";
+  if(r.error){addLog(r.error);toast(r.error,true);return}
+  r.out.forEach(t=>{if(t!==null)addLog(t)});S=r.q;$("cap").value=S.cap;$("capv").textContent=S.cap;render();flashNow()}
+$("runBatch").onclick=()=>loadResult(runInput($("batch").value));
+
+const TESTS=[
+ {n:"1. Hall fills up, one person served, a new person arrives (wrap-around)",i:"3\nISSUE a\nISSUE b\nISSUE c\nISSUE d\nSERVE\nISSUE e\nSHOW",
+  e:["Issued T1 to a","Issued T2 to b","Issued T3 to c","Queue full - cannot issue to d","Serving T1 (a)","Issued T4 to e","Queue: T2(b) T3(c) T4(e) | front=1 rear=0 size=3"]},
+ {n:"2. Serve before anyone arrives",i:"2\nSERVE\nISSUE x\nSHOW\nSERVE\nSHOW",
+  e:["Queue empty","Issued T1 to x","Queue: T1(x) | front=0 rear=0 size=1","Serving T1 (x)","Queue: empty | front=-1 rear=-1 size=0"]},
+ {n:"3. Hall of 4: indices wrap around",i:"4\nISSUE A\nISSUE B\nISSUE C\nISSUE D\nSERVE\nSERVE\nISSUE E\nISSUE F\nSHOW\nISSUE G",
+  e:["Issued T1 to A","Issued T2 to B","Issued T3 to C","Issued T4 to D","Serving T1 (A)","Serving T2 (B)","Issued T5 to E","Issued T6 to F","Queue: T3(C) T4(D) T5(E) T6(F) | front=2 rear=1 size=4","Queue full - cannot issue to G"]},
+ {n:"4. Single-seat hall",i:"1\nISSUE a\nISSUE b\nSERVE\nISSUE c\nSHOW",
+  e:["Issued T1 to a","Queue full - cannot issue to b","Serving T1 (a)","Issued T2 to c","Queue: T2(c) | front=0 rear=0 size=1"]},
+ {n:"5. Everyone served, then one extra serve call",i:"3\nISSUE a\nISSUE b\nISSUE c\nSERVE\nSERVE\nSERVE\nSERVE\nSHOW",
+  e:["Issued T1 to a","Issued T2 to b","Issued T3 to c","Serving T1 (a)","Serving T2 (b)","Serving T3 (c)","Queue empty","Queue: empty | front=-1 rear=-1 size=0"]}];
+const rows=[];
+function check(t,bd,df){
+  const r=runInput(t.i),bad=[];
+  if(r.error)bad.push(r.error);else{const m=Math.max(r.out.length,t.e.length);
+    for(let k=0;k<m;k++)if(r.out[k]!==t.e[k])bad.push("line "+(k+1)+"\n  expected: "+t.e[k]+"\n  got:      "+r.out[k])}
+  bd.textContent=bad.length?"FAIL":"PASS";bd.className="bd "+(bad.length?"fail":"pass");
+  df.textContent=bad.join("\n");df.style.display=bad.length?"block":"none";
+  return{r,ok:!bad.length}}
+function summary(){const d=rows.filter(x=>x.bd.textContent!=="-");
+  if(!d.length){$("sum").textContent="";return}
+  const p=d.filter(x=>x.bd.textContent==="PASS").length;$("sum").textContent=p+" / "+rows.length+" passed";
+  $("sum").style.color=p===rows.length?"var(--grn)":"var(--red)"}
+TESTS.forEach(t=>{
+  const row=document.createElement("div");row.className="test";
+  const nm=document.createElement("div");nm.className="nm";nm.textContent=t.n;
+  const bd=document.createElement("span");bd.className="bd";bd.textContent="-";
+  const b=document.createElement("button");b.className="sec";b.textContent="Load and run";
+  const df=document.createElement("div");df.className="diff";df.style.display="none";
+  b.onclick=()=>{$("batch").value=t.i;const x=check(t,bd,df);summary();loadResult(x.r)};
+  row.append(nm,bd,b,df);$("tests").appendChild(row);rows.push({t,bd,df})});
+$("runAll").onclick=()=>{rows.forEach(x=>check(x.t,x.bd,x.df));summary();toast("Test run complete.")};
+
+function tick(){const d=new Date();$("clk").textContent=d.toLocaleTimeString([], {hour12:false});
+  $("dt").textContent=d.toLocaleDateString([], {weekday:"short",day:"numeric",month:"short",year:"numeric"})}
+tick();setInterval(tick,1000);
+createHall();
+</script>
+</body>
+</html>
