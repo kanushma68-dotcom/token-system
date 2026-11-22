@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age Group Segmentation</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f3f6fc;
+    padding: 30px;
+    color: #26344d;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+header {
+    background: #1e3a6d;
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #dce7ff;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 12px #0000000c;
+}
+
+h2 {
+    font-size: 19px;
+    margin-bottom: 18px;
+    color: #1e3a6d;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 14px;
+    border: 1px solid #ccd5e3;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: vertical;
+}
+
+button {
+    background: #2858a5;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin-top: 14px;
+    margin-right: 8px;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #173b78;
+}
+
+.reset {
+    background: #64748b;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.stat {
+    padding: 20px;
+    background: #edf3ff;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.stat p {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2858a5;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 13px;
+    border-bottom: 1px solid #e3e8f0;
+    text-align: left;
+}
+
+th {
+    background: #1e3a6d;
+    color: white;
+}
+
+tr:hover {
+    background: #f5f8ff;
+}
+
+.warning {
+    color: #c0392b;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.success {
+    color: #16834a;
+    margin-top: 15px;
+}
+
+.chart-container {
+    width: 100%;
+    height: 320px;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.group-label {
+    display: inline-block;
+    background: #e7efff;
+    color: #2858a5;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 13px;
+}
+
+@media(max-width:700px) {
+    body {
+        padding: 12px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card {
+        padding: 15px;
+        overflow-x: auto;
+    }
+
+    header h1 {
+        font-size: 21px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>Age Group Segmentation</h1>
+    <p>Equal-Width Binning | Gym Member Analysis</p>
+</header>
+
+<div class="card">
+    <h2>Enter Member Ages</h2>
+
+    <p style="margin-bottom:12px;">
+        Enter ages separated by commas.
+    </p>
+
+    <textarea id="ages">12, 17, 18, 25, 35, 36, 59, 60, 72</textarea>
+
+    <br>
+
+    <button onclick="analyzeAges()">Analyze Ages</button>
+    <button class="reset" onclick="resetData()">Reset</button>
+
+    <p id="message"></p>
+</div>
+
+<div class="card">
+    <h2>Age Group Counts</h2>
+
+    <div class="stats">
+
+        <div class="stat">
+            <h3>Teen</h3>
+            <p id="teen">0</p>
+        </div>
+
+        <div class="stat">
+            <h3>Young Adult</h3>
+            <p id="young">0</p>
+        </div>
+
+        <div class="stat">
+            <h3>Adult</h3>
+            <p id="adult">0</p>
+        </div>
+
+        <div class="stat">
+            <h3>Senior</h3>
+            <p id="senior">0</p>
+        </div>
+
+    </div>
+</div>
+
+<div class="card">
+    <h2>Member Age Group Table</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Age</th>
+                <th>Age Group</th>
+            </tr>
+        </thead>
+
+        <tbody id="resultTable"></tbody>
+    </table>
+
+    <p id="invalid" class="warning"></p>
+</div>
+
+<div class="card">
+    <h2>Age Group Bar Chart</h2>
+
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Bin Details</h2>
+
+    <table>
+        <tr>
+            <th>Age Range</th>
+            <th>Group Name</th>
+        </tr>
+        <tr>
+            <td>(0, 18]</td>
+            <td>Teen</td>
+        </tr>
+        <tr>
+            <td>(18, 35]</td>
+            <td>Young Adult</td>
+        </tr>
+        <tr>
+            <td>(35, 60]</td>
+            <td>Adult</td>
+        </tr>
+        <tr>
+            <td>(60, 100]</td>
+            <td>Senior</td>
+        </tr>
+    </table>
+</div>
+
+</div>
+
+<script>
+
+function getAgeGroup(age) {
+
+    if (age > 0 && age <= 18) {
+        return "Teen";
+    }
+
+    else if (age > 18 && age <= 35) {
+        return "Young Adult";
+    }
+
+    else if (age > 35 && age <= 60) {
+        return "Adult";
+    }
+
+    else if (age > 60 && age <= 100) {
+        return "Senior";
+    }
+
+    return null;
+}
+
+
+function analyzeAges() {
+
+    const input = document.getElementById("ages").value.trim();
+
+    const message = document.getElementById("message");
+    const table = document.getElementById("resultTable");
+    const invalid = document.getElementById("invalid");
+
+    table.innerHTML = "";
+    invalid.innerHTML = "";
+    message.innerHTML = "";
+
+    if (input === "") {
+        message.innerHTML = "Please enter member ages.";
+        message.className = "warning";
+        updateCounts([0, 0, 0, 0]);
+        drawChart([0, 0, 0, 0]);
+        return;
+    }
+
+    const values = input.split(/[\s,]+/);
+
+    const counts = {
+        "Teen": 0,
+        "Young Adult": 0,
+        "Adult": 0,
+        "Senior": 0
+    };
+
+    let row = 1;
+    let outside = [];
+
+    values.forEach(value => {
+
+        const age = Number(value);
+
+        if (value === "" || !Number.isInteger(age) || age < 0) {
+            outside.push(value);
+            return;
+        }
+
+        const group = getAgeGroup(age);
+
+        if (group === null) {
+            outside.push(age);
+            return;
+        }
+
+        counts[group]++;
+
+        const tr = document.createElement("tr");
+
+        const td1 = document.createElement("td");
+        td1.textContent = row++;
+
+        const td2 = document.createElement("td");
+        td2.textContent = age;
+
+        const td3 = document.createElement("td");
+        const span = document.createElement("span");
+        span.className = "group-label";
+        span.textContent = group;
+        td3.appendChild(span);
+
+        tr.append(td1, td2, td3);
+        table.appendChild(tr);
+
+    });
+
+    const orderedCounts = [
+        counts["Teen"],
+        counts["Young Adult"],
+        counts["Adult"],
+        counts["Senior"]
+    ];
+
+    updateCounts(orderedCounts);
+    drawChart(orderedCounts);
+
+    if (outside.length > 0) {
+        invalid.textContent =
+            "Outside / invalid values: " + outside.join(", ") +
+            ". These values were not included in the groups.";
+    }
+
+    if (row === 1) {
+        message.textContent = "No valid ages found.";
+        message.className = "warning";
+    } else {
+        message.textContent =
+            "Analysis completed successfully!";
+        message.className = "success";
+    }
+}
+
+
+function updateCounts(counts) {
+
+    document.getElementById("teen").textContent = counts[0];
+    document.getElementById("young").textContent = counts[1];
+    document.getElementById("adult").textContent = counts[2];
+    document.getElementById("senior").textContent = counts[3];
+
+}
+
+
+function drawChart(counts) {
+
+    const canvas = document.getElementById("chart");
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    ctx.scale(dpr, dpr);
+
+    ctx.clearRect(0, 0, width, height);
+
+    const labels = [
+        "Teen",
+        "Young Adult",
+        "Adult",
+        "Senior"
+    ];
+
+    const colors = [
+        "#4776d0",
+        "#20a5a0",
+        "#e7a33e",
+        "#8464c8"
+    ];
+
+    const max = Math.max(...counts, 1);
+
+    const chartHeight = height - 65;
+    const barWidth = Math.min(75, width / 8);
+    const gap = width / 5;
+
+    ctx.font = "13px Arial";
+    ctx.textAlign = "center";
+
+    counts.forEach((count, i) => {
+
+        const x = gap * (i + 0.5) - barWidth / 2;
+        const barHeight = (count / max) * (chartHeight - 35);
+        const y = chartHeight - barHeight;
+
+        ctx.fillStyle = colors[i];
+
+        ctx.fillRect(
+            x,
+            y,
+            barWidth,
+            barHeight
+        );
+
+        ctx.fillStyle = "#26344d";
+        ctx.fillText(count, x + barWidth / 2, y - 8);
+
+        ctx.fillText(
+            labels[i],
+            x + barWidth / 2,
+            chartHeight + 25
+        );
+
+    });
+
+    ctx.strokeStyle = "#ccd5e3";
+    ctx.beginPath();
+    ctx.moveTo(15, chartHeight);
+    ctx.lineTo(width - 15, chartHeight);
+    ctx.stroke();
+
+}
+
+
+function resetData() {
+
+    document.getElementById("ages").value = "";
+
+    document.getElementById("resultTable").innerHTML = "";
+    document.getElementById("invalid").textContent = "";
+    document.getElementById("message").textContent = "";
+
+    updateCounts([0, 0, 0, 0]);
+    drawChart([0, 0, 0, 0]);
+
+}
+
+
+// Run default test case
+window.addEventListener("load", () => {
+    analyzeAges();
+});
+
+window.addEventListener("resize", () => {
+    const counts = [
+        Number(document.getElementById("teen").textContent),
+        Number(document.getElementById("young").textContent),
+        Number(document.getElementById("adult").textContent),
+        Number(document.getElementById("senior").textContent)
+    ];
+
+    drawChart(counts);
+});
+
+</script>
+
+</body>
+</html>
