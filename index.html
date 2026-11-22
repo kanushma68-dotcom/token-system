@@ -3,334 +3,332 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Management System | Passport Office</title>
+<title>Duplicate Customer Detection | CRM Data Cleaning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#14305a;--navy2:#0e2342;--ink:#1b2733;--mute:#5f6f7c;--bg:#eef1f5;--card:#fff;--line:#d5dde5;--saf:#e8890c;--saf-s:#fdf0dc;--grn:#1c7c54;--red:#b42318;--blue-s:#e6edf7}
+:root{--bg:#f3f6f5;--card:#fff;--ink:#16212a;--mute:#5b6b76;--line:#d6dfe0;--teal:#0f6b63;--teal-s:#dff0ee;--amber:#c97f00;--amber-s:#fff1d1;--red:#b3261e;--red-s:#fbe4e2;--grn:#1a7f4b;--code:#0f1b22}
 *{box-sizing:border-box}
-body{margin:0;font-family:"Public Sans","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
-.tricolor{height:5px;background:linear-gradient(90deg,#e8890c 33%,#fff 33% 66%,#1c7c54 66%)}
-header.top{background:var(--navy);color:#fff}
+body{margin:0;font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.mono,code,pre,td.d,th.d{font-family:"IBM Plex Mono",Consolas,monospace}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-.bar{display:flex;align-items:center;gap:14px;padding:14px 0;flex-wrap:wrap}
-.logo{width:42px;height:42px;border-radius:50%;border:2px solid var(--saf);display:grid;place-items:center;font-weight:800;color:var(--saf)}
-.bar h1{margin:0;font-size:1.2rem;font-weight:700}
-.bar small{display:block;color:#b8c7de;font-size:.8rem}
-.sp{flex:1}
-.clock{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-.clock small{display:block}
-.pill{padding:5px 12px;border-radius:99px;font-size:.8rem;font-weight:700;background:#fff2;border:1px solid #fff4}
-.pill.full{background:var(--red);border-color:var(--red)}
-.pill.open{background:var(--grn);border-color:var(--grn)}
-main{padding:22px 0 40px}
-.g{display:grid;gap:18px;margin-bottom:18px}
-.g.a{grid-template-columns:5fr 7fr}.g.b{grid-template-columns:5fr 7fr}.g.c{grid-template-columns:1fr 1fr}
-@media(max-width:900px){.g.a,.g.b,.g.c{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 1px 2px #14305a10}
-.card h2{margin:0 0 12px;font-size:1rem;color:var(--navy);display:flex;align-items:center;gap:8px}
-.card h2 span{font-weight:500;color:var(--mute);font-size:.82rem}
-.serving{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;border:0;display:flex;flex-direction:column;justify-content:space-between;min-height:340px}
-.serving .lab{color:#b8c7de;font-size:.9rem}
-.serving .num{font-size:6.5rem;font-weight:800;line-height:1;margin:6px 0;font-variant-numeric:tabular-nums;color:var(--saf)}
-.serving .who{font-size:1.5rem;font-weight:600;min-height:36px}
-.next{border-top:1px solid #fff3;padding-top:12px;color:#b8c7de;font-size:.92rem}
-.next b{color:#fff}
-.flash{animation:fl .5s}@keyframes fl{from{transform:scale(1.08);opacity:.4}to{transform:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){.flash{animation:none}}
-#ring{width:100%;max-height:360px;display:block}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--mute);justify-content:center}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-label{display:block;font-size:.84rem;color:var(--mute);margin-bottom:4px;font-weight:500}
-input[type=text],input[type=number],textarea{width:100%;padding:10px 11px;font:inherit;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
-textarea{font-family:Consolas,"Courier New",monospace;font-size:.88rem}
-input[type=range]{width:100%;accent-color:var(--navy)}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:end}
-.row>.f{flex:1 1 150px}
-button{padding:10px 16px;font:inherit;font-weight:600;border-radius:8px;cursor:pointer;border:1px solid var(--navy);background:var(--navy);color:#fff}
-button.sec{background:#fff;color:var(--navy)}button.acc{background:var(--saf);border-color:var(--saf);color:#1b1200}
-button:hover{filter:brightness(1.08)}
+nav{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav .wrap{display:flex;align-items:center;gap:18px;height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.mark{width:32px;height:32px;border-radius:8px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:.8rem}
+nav a{color:var(--mute);text-decoration:none;font-size:.92rem}nav a:hover{color:var(--teal)}
+.sp{flex:1}.co{background:var(--teal-s);color:var(--teal);font-weight:700;font-size:.8rem;padding:4px 10px;border-radius:99px}
+.hero{background:var(--ink);color:#fff;padding:38px 0 34px}
+.hero h1{margin:0 0 8px;font-size:2.2rem;line-height:1.2}
+.hero p{margin:0 0 18px;color:#b9c8d0;max-width:720px}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{border:1px solid #ffffff30;border-radius:8px;padding:7px 12px;font-size:.85rem;background:#ffffff10}
+.chip code{color:#ffd37a}
+main{padding:26px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:20px}
+.card h2{margin:0 0 12px;font-size:1.1rem;color:var(--teal)}
+.card h2 small{font-weight:400;color:var(--mute);margin-left:8px;font-size:.85rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.work{display:grid;grid-template-columns:5fr 7fr;gap:20px;align-items:start}
+@media(max-width:900px){.two,.work{grid-template-columns:1fr}}
+ul.req{margin:0;padding-left:20px}ul.req li{margin-bottom:5px}
+code{background:var(--teal-s);padding:1px 6px;border-radius:5px;font-size:.84rem}
+label{display:block;font-size:.84rem;color:var(--mute);margin:12px 0 4px;font-weight:500}
+textarea,input[type=text],select{width:100%;padding:10px;font:inherit;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+textarea{font-family:"IBM Plex Mono",Consolas,monospace;font-size:.85rem;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{font:inherit;font-weight:600;padding:9px 15px;border-radius:8px;border:1px solid var(--teal);background:var(--teal);color:#fff;cursor:pointer}
+button.sec{background:#fff;color:var(--teal)}button.amb{background:var(--amber);border-color:var(--amber);color:#1b1200}
+button:hover{filter:brightness(1.07)}button:disabled{opacity:.45;cursor:not-allowed}
 :focus-visible{outline:3px solid #f2b705;outline-offset:2px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
-@media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
-.st{background:var(--blue-s);border-radius:10px;padding:10px 12px}
-.st b{display:block;font-size:1.5rem;font-variant-numeric:tabular-nums}.st span{font-size:.76rem;color:var(--mute)}
-.meter{height:10px;background:var(--blue-s);border-radius:9px;overflow:hidden;margin:6px 0 14px}
-.meter div{height:100%;background:var(--navy);width:0;transition:width .3s}
-.strip{display:flex;flex-wrap:wrap;gap:6px}
-.cell{width:58px;border:2px solid var(--line);border-radius:8px;text-align:center;padding:3px 2px;font-size:.72rem;background:#f8fafb}
-.cell em{display:block;font-style:normal;color:var(--mute);font-size:.66rem}
-.cell b{display:block;font-size:.95rem}
-.cell.u{background:var(--blue-s);border-color:var(--navy)}.cell.f{background:var(--saf-s);border-color:var(--saf)}
-.cell .t{display:block;min-height:13px;font-weight:700;color:var(--navy);font-size:.66rem}
-.ticket{display:flex;border:1px dashed var(--mute);border-radius:10px;margin-top:14px;overflow:hidden;background:var(--saf-s);min-height:78px}
-.ticket .l{padding:10px 16px;background:var(--saf);color:#1b1200;font-weight:800;font-size:1.6rem;display:grid;place-items:center;min-width:86px}
-.ticket .r{padding:10px 14px;font-size:.9rem}.ticket .r b{display:block;font-size:1.05rem}
-#log{margin:0;background:#101d2a;color:#d8e5ee;border-radius:10px;height:260px;overflow:auto;padding:8px 0;font-family:Consolas,"Courier New",monospace;font-size:.85rem}
-#log div{padding:3px 12px;border-left:3px solid #3b5b78;display:flex;gap:10px}
-#log time{color:#7f98ad;flex:none}
-#log .ok{border-color:#3fb67f}#log .err{border-color:#ef6b5f;color:#ffb7b0}#log .inf{border-color:var(--saf)}
-.tools{display:flex;gap:8px;margin-top:10px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.step{border:2px solid var(--line);border-radius:10px;padding:10px;font-size:.82rem;background:#fafcfc}
+.step b{display:flex;align-items:center;gap:7px;font-size:.88rem;margin-bottom:4px}
+.step b i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-size:.75rem}
+.step.done{border-color:var(--teal);background:var(--teal-s)}.step.done b i{background:var(--teal);color:#fff}
+.step.now{border-color:var(--amber);background:var(--amber-s)}.step.now b i{background:var(--amber);color:#fff}
+.step code{font-size:.74rem;word-break:break-word}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}}
+.st{background:var(--teal-s);border-radius:10px;padding:10px 12px}.st b{display:block;font-size:1.6rem;font-variant-numeric:tabular-nums}.st span{font-size:.78rem;color:var(--mute)}
+.st.r{background:var(--amber-s)}
+.msg{background:var(--code);color:#9ff0c4;border-radius:10px;padding:14px 16px;font-family:"IBM Plex Mono",Consolas,monospace;font-size:1rem;margin-bottom:14px;min-height:50px}
+.msg .dim{color:#7f98a5}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px;font-weight:600;white-space:nowrap}
+td{padding:7px 10px;border-top:1px solid var(--line);white-space:nowrap}
+td.d{font-size:.84rem}
+tr.dup td{background:var(--amber-s)}tr.dup td.d:not(.nodim){text-decoration:line-through;text-decoration-color:#c97f0080}
+tr.dup td.st2,tr.dup td.idx{text-decoration:none}
+.ws{color:var(--red);background:var(--red-s);border-radius:3px;padding:0 1px}
+.tag{font-family:"IBM Plex Sans";font-size:.74rem;font-weight:700;padding:2px 8px;border-radius:99px}
+.tag.k{background:#d6f0e1;color:var(--grn)}.tag.x{background:#fbe0b0;color:#8a5600}
+h3{margin:14px 0 6px;font-size:.92rem}h3 small{color:var(--mute);font-weight:400}
+.empty{color:var(--mute);font-size:.9rem;padding:14px;border:1px dashed var(--line);border-radius:10px;text-align:center}
+pre{margin:0;background:var(--code);color:#d5e4eb;border-radius:10px;padding:14px;overflow:auto;font-size:.84rem;line-height:1.55}
+pre .k{color:#ffd37a}pre .s{color:#9ff0c4}pre .c{color:#7f98a5}
+.test{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin-bottom:8px;font-size:.9rem}
+.test .nm{flex:1 1 240px}.bd{font-weight:700;min-width:48px;text-align:center}.bd.p{color:var(--grn)}.bd.f{color:var(--red)}
+.test button{padding:5px 11px;font-size:.82rem}.diff{flex-basis:100%;color:var(--red);font-size:.82rem;white-space:pre-wrap}
 .sum{margin-left:auto;font-weight:700;font-size:.9rem}
-.test{border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.9rem}
-.test .nm{flex:1 1 200px}
-.bd{font-weight:800;min-width:46px;text-align:center}.bd.pass{color:var(--grn)}.bd.fail{color:var(--red)}
-.test button{padding:5px 10px;font-size:.82rem}
-.diff{flex-basis:100%;font-family:Consolas,monospace;font-size:.78rem;color:var(--red);white-space:pre-wrap}
-.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media(max-width:800px){.how{grid-template-columns:1fr}}
-.how div{border-left:4px solid var(--saf);padding-left:12px}.how h3{margin:0 0 4px;font-size:.95rem;color:var(--navy)}
-.how p{margin:0;font-size:.88rem;color:var(--mute)}
-code{background:var(--blue-s);padding:1px 6px;border-radius:5px;font-size:.84rem}
-footer{background:var(--navy2);color:#b8c7de;text-align:center;padding:16px;font-size:.85rem}
-#toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:11px 16px;border-radius:9px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;max-width:320px;font-size:.9rem}
-#toast.on{opacity:1;transform:none}#toast.err{background:var(--red)}
+.ex{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px}
+.ex span.arrow{color:var(--mute)}
+footer{background:var(--ink);color:#b9c8d0;text-align:center;padding:16px;font-size:.85rem}
+#toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:10px 15px;border-radius:9px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;font-size:.9rem}
+#toast.on{opacity:1;transform:none}
 </style>
 </head>
 <body>
-<div class="tricolor"></div>
-<header class="top"><div class="wrap bar">
-  <div class="logo">PO</div>
-  <div><h1>Passport Office Token Counter</h1><small>Waiting hall management, circular queue</small></div>
+<nav><div class="wrap">
+  <div class="brand"><div class="mark">CRM</div>Customer Data Cleaner</div>
   <div class="sp"></div>
-  <span class="pill" id="pill">Hall empty</span>
-  <div class="clock"><span id="clk"></span><small id="dt"></small></div>
+  <a href="#problem">Problem</a><a href="#workspace">Workspace</a><a href="#code">Python code</a><a href="#tests">Tests</a>
+  <span class="co">CO3</span>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <h1>Duplicate Customer Detection</h1>
+  <p>The same customer is entered many times with differently formatted emails. Clean the key, remove the repeats, keep the first record.</p>
+  <div class="chips">
+    <div class="chip">Key: <code>email.str.strip().str.lower()</code></div>
+    <div class="chip"><code>drop_duplicates(subset=key, keep='first')</code></div>
+    <div class="chip">Rename <code>nm</code> to <code>name</code></div>
+  </div>
 </div></header>
 
 <main class="wrap">
-  <div class="g a">
-    <section class="card serving" aria-live="polite">
+  <section class="card" id="problem">
+    <div class="two">
       <div>
-        <div class="lab">Now serving</div>
-        <div class="num" id="nowNum">--</div>
-        <div class="who" id="nowWho">Counter is free</div>
+        <h2>Problem statement</h2>
+        <p style="margin:0">A CRM has the same customer entered multiple times with differently formatted emails. Remove duplicates where emails match after trimming spaces and ignoring case, keeping the <b>first</b> record.</p>
       </div>
-      <div class="next" id="nextUp">No one waiting</div>
-    </section>
-    <section class="card">
-      <h2>Waiting hall <span id="ringNote"></span></h2>
-      <svg id="ring" viewBox="0 0 360 340" role="img" aria-label="Circular queue of seats"></svg>
-      <div class="legend"><span><i style="background:#e6edf7;border:2px solid #14305a"></i>Occupied</span><span><i style="background:#fdf0dc;border:2px solid #e8890c"></i>Front (next)</span><span><i style="background:#fff;border:2px solid #d5dde5"></i>Free seat</span></div>
-    </section>
-  </div>
-
-  <div class="g b">
-    <section class="card">
-      <h2>Service counter</h2>
-      <label for="cap">Hall capacity: <b id="capv">3</b> seats</label>
-      <input id="cap" type="range" min="1" max="100" value="3">
-      <div class="row"><button class="sec" id="create">Create hall (resets)</button></div>
-      <div class="row">
-        <div class="f"><label for="name">Applicant name</label><input id="name" type="text" maxlength="30" placeholder="e.g. Priya"></div>
-        <button id="issue" class="acc">ISSUE token</button>
+      <div>
+        <h2>Requirements</h2>
+        <ul class="req">
+          <li>Create a normalised key with <code>email.str.strip().str.lower()</code>.</li>
+          <li>Use <code>drop_duplicates(subset=key, keep='first')</code>.</li>
+          <li>Rename ambiguous columns (e.g. <code>nm</code> to <code>name</code>) and print how many rows were removed.</li>
+        </ul>
       </div>
-      <div class="row"><button id="serve">SERVE next</button><button class="sec" id="show">SHOW board</button></div>
-      <div class="ticket" id="ticket"><div class="l">--</div><div class="r"><b>No token issued yet</b>Last issued token appears here.</div></div>
-    </section>
-    <section class="card">
-      <h2>Status board <span>front, rear and size</span></h2>
-      <div class="stats">
-        <div class="st"><b id="sFront">-1</b><span>front</span></div>
-        <div class="st"><b id="sRear">-1</b><span>rear</span></div>
-        <div class="st"><b id="sSize">0</b><span>size</span></div>
-        <div class="st"><b id="sCap">3</b><span>capacity</span></div>
-      </div>
-      <label>Hall occupancy <b id="occ">0%</b></label>
-      <div class="meter"><div id="meter"></div></div>
-      <div class="stats">
-        <div class="st"><b id="cIss">0</b><span>tokens issued</span></div>
-        <div class="st"><b id="cSrv">0</b><span>people served</span></div>
-        <div class="st"><b id="cRej">0</b><span>turned away</span></div>
-        <div class="st"><b id="cNxt">T1</b><span>next token no.</span></div>
-      </div>
-      <div class="strip" id="strip"></div>
-    </section>
-  </div>
-
-  <div class="g c">
-    <section class="card">
-      <h2>Activity log <span>exact program output</span></h2>
-      <div id="log"></div>
-      <div class="tools"><button class="sec" id="copy">Copy output</button><button class="sec" id="clear">Clear</button></div>
-    </section>
-    <section class="card">
-      <h2>Batch runner <span>same format as the problem sheet</span></h2>
-      <textarea id="batch" rows="10">3
-ISSUE a
-ISSUE b
-ISSUE c
-ISSUE d
-SERVE
-ISSUE e
-SHOW</textarea>
-      <div class="row"><button id="runBatch">Run batch</button></div>
-    </section>
-  </div>
-
-  <section class="card" style="margin-bottom:18px">
-    <h2>Test cases <span>from the problem sheet</span><b class="sum" id="sum"></b></h2>
-    <div class="row" style="margin:0 0 10px"><button id="runAll">Run all tests</button></div>
-    <div id="tests"></div>
-  </section>
-
-  <section class="card">
-    <h2>How the circular queue works</h2>
-    <div class="how">
-      <div><h3>ISSUE</h3><p>If size equals N the hall is full. Otherwise <code>rear = (rear + 1) % N</code>, and the first arrival sets front = rear = 0. The token number only increases on success.</p></div>
-      <div><h3>SERVE</h3><p>If size is 0 the queue is empty. Otherwise take the item at front, then <code>front = (front + 1) % N</code>. When the last person leaves, front and rear reset to -1.</p></div>
-      <div><h3>Complexity</h3><p>ISSUE and SERVE are O(1). SHOW is O(size). The array has fixed size N, so no space is wasted as seats are reused.</p></div>
     </div>
   </section>
+
+  <div class="work" id="workspace">
+    <section class="card">
+      <h2>1. Your data <small>CSV, first line is the header</small></h2>
+      <div class="row" style="margin-top:0">
+        <button class="sec" id="tc1">Load test case 1</button>
+        <button class="sec" id="tc2">Load test case 2</button>
+      </div>
+      <label for="csv">Customer table</label>
+      <textarea id="csv" rows="9" spellcheck="false"></textarea>
+      <label for="emailCol">Email column</label>
+      <select id="emailCol"></select>
+      <label for="ren">Rename columns <small>(old:new, comma separated)</small></label>
+      <input id="ren" type="text" value="nm:name">
+      <p style="font-size:.8rem;color:var(--mute);margin:8px 0 0">Tip: put a value in quotes to keep spaces, like <code>" Ravi@X.com "</code>. Red dots in the table show hidden spaces.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. Pipeline <small>run it all, or step by step</small></h2>
+      <div class="steps" id="steps"></div>
+      <div class="row" style="margin:0 0 14px">
+        <button id="run" class="amb">Run pipeline</button>
+        <button id="next" class="sec">Next step</button>
+        <button id="reset" class="sec">Reset</button>
+      </div>
+      <div class="stats">
+        <div class="st"><b id="sIn">0</b><span>rows in</span></div>
+        <div class="st"><b id="sKeep">-</b><span>rows kept</span></div>
+        <div class="st r"><b id="sRem">-</b><span>duplicates removed</span></div>
+        <div class="st"><b id="sPct">-</b><span>duplicate rate</span></div>
+      </div>
+      <div class="msg" id="msg"><span class="dim">Press "Run pipeline" to see the result message.</span></div>
+      <h3>Before <small>raw data with the normalised key</small></h3>
+      <div class="tw"><table id="before"></table></div>
+      <h3>After <small>deduplicated DataFrame</small></h3>
+      <div id="afterBox"></div>
+      <div class="row"><button class="sec" id="dl">Download cleaned CSV</button><button class="sec" id="cpMsg">Copy message</button></div>
+    </section>
+  </div>
+
+  <section class="card" id="why">
+    <h2>Why clean the key first?</h2>
+    <p style="margin:0 0 4px">Computers compare text exactly. These three emails look different to Python, but they are the same person:</p>
+    <div class="ex mono">
+      <span id="ex1"></span><span class="arrow">strip + lower</span><b>ravi@x.com</b>
+    </div>
+    <p style="margin:10px 0 0;color:var(--mute);font-size:.9rem"><code>strip()</code> removes spaces at both ends. <code>lower()</code> makes all letters small. After this, equal emails become equal keys, so <code>drop_duplicates</code> can find them.</p>
+  </section>
+
+  <section class="card" id="code">
+    <h2>Python (pandas) code for your data <small>updates as you edit</small></h2>
+    <pre id="py"></pre>
+    <div class="row"><button class="sec" id="cpCode">Copy code</button></div>
+  </section>
+
+  <section class="card" id="tests">
+    <h2>Test cases <b class="sum" id="sum"></b></h2>
+    <div class="row" style="margin:0 0 10px"><button id="runAll">Run all tests</button></div>
+    <div id="tlist"></div>
+  </section>
 </main>
-<footer>CS25C08 Data Structures - Project Based Learning | Problem 8: Token Management System (Queue: circular queue)</footer>
+<footer>Problem 5: Duplicate Customer Detection | CO3 | Data cleaning with pandas</footer>
 <div id="toast"></div>
 
 <script>
-class TokenQueue{
-  constructor(n){this.cap=n;this.arr=new Array(n).fill(null);this.front=-1;this.rear=-1;this.size=0;this.next=1;this.iss=0;this.srv=0;this.rej=0;this.last=null;this.lastIssued=null}
-  issue(name){
-    if(this.size===this.cap){this.rej++;return null}
-    if(this.size===0){this.front=0;this.rear=0}else this.rear=(this.rear+1)%this.cap;
-    const it={tk:"T"+this.next++,name};this.arr[this.rear]=it;this.size++;this.iss++;this.lastIssued=it;return it}
-  serve(){
-    if(this.size===0)return null;
-    const it=this.arr[this.front];this.arr[this.front]=null;
-    if(this.size===1){this.front=-1;this.rear=-1}else this.front=(this.front+1)%this.cap;
-    this.size--;this.srv++;this.last=it;return it}
-  show(){
-    const t=" | front="+this.front+" rear="+this.rear+" size="+this.size;
-    if(!this.size)return "Queue: empty"+t;
-    const p=[];for(let k=0;k<this.size;k++){const i=this.arr[(this.front+k)%this.cap];p.push(i.tk+"("+i.name+")")}
-    return "Queue: "+p.join(" ")+t}
-  exec(line){
-    line=line.trim();if(!line)return null;
-    const sp=line.indexOf(" "),cmd=(sp<0?line:line.slice(0,sp)).toUpperCase(),arg=sp<0?"":line.slice(sp+1).trim();
-    if(cmd==="ISSUE"){if(!arg)return "Invalid command: ISSUE needs a name";const it=this.issue(arg);return it?"Issued "+it.tk+" to "+arg:"Queue full - cannot issue to "+arg}
-    if(cmd==="SERVE"){const it=this.serve();return it?"Serving "+it.tk+" ("+it.name+")":"Queue empty"}
-    if(cmd==="SHOW")return this.show();
-    return "Invalid command: "+line}
-}
-function runInput(text){
-  const L=text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-  if(!L.length)return{error:"Input is empty."};
-  const n=parseInt(L[0],10);
-  if(!(n>=1&&n<=100))return{error:"Capacity must be between 1 and 100."};
-  const q=new TokenQueue(n),out=[];for(let i=1;i<L.length;i++)out.push(q.exec(L[i]));
-  return{q,out}}
-
 const $=id=>document.getElementById(id);
-let S=new TokenQueue(3),logLines=[];
-const NS="http://www.w3.org/2000/svg";
-function el(tag,attrs,txt){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!==undefined)e.textContent=txt;return e}
+const TC1='nm,email\nRavi,ravi@x.com\nRavi K," Ravi@X.com"\nPriya,priya@x.com\nSam,sam@x.com\nRAVI,"RAVI@x.com "';
+const TC2='nm,email\nAsha,asha@x.com\nBala,bala@x.com\nChitra,chitra@x.com';
 
-function kind(t){return /^(Queue full|Queue empty|Invalid)/.test(t)?"err":/^Queue:/.test(t)?"inf":"ok"}
-function addLog(t){
-  logLines.push(t);
-  const d=document.createElement("div");d.className=kind(t);
-  const tm=document.createElement("time");tm.textContent=new Date().toLocaleTimeString([], {hour12:false});
-  const s=document.createElement("span");s.textContent=t;d.append(tm,s);$("log").appendChild(d);$("log").scrollTop=1e9}
-function toast(m,err){const t=$("toast");t.textContent=m;t.className="on"+(err?" err":"");clearTimeout(toast.h);toast.h=setTimeout(()=>t.className="",2200)}
+function parseCSV(t){
+  const rows=[];let f="",r=[],q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;else if(c===","){r.push(f);f=""}
+    else if(c==="\n"||c==="\r"){if(c==="\r"&&t[i+1]==="\n")i++;r.push(f);rows.push(r);r=[];f=""}
+    else f+=c}
+  if(f!==""||r.length){r.push(f);rows.push(r)}
+  const L=rows.filter(x=>x.some(v=>v!==""));
+  if(!L.length)return{cols:[],rows:[]};
+  const cols=L[0].map(s=>s.trim());
+  return{cols,rows:L.slice(1).map(a=>{const o={};cols.forEach((c,i)=>o[c]=a[i]===undefined?"":a[i]);return o})}}
 
-function renderRing(){
-  const q=S,svg=$("ring");svg.innerHTML="";
-  const cx=180,cy=160,R=q.cap===1?0:118,N=q.cap;
-  const r=N===1?60:Math.min(30,Math.sin(Math.PI/N)*R*0.9);
-  svg.appendChild(el("circle",{cx,cy,r:R||1,fill:"none",stroke:"#d5dde5","stroke-dasharray":"4 5"}));
-  svg.appendChild(el("text",{x:cx,y:cy+2,"text-anchor":"middle","font-size":26,"font-weight":800,fill:"#14305a"},q.size+" / "+N));
-  svg.appendChild(el("text",{x:cx,y:cy+22,"text-anchor":"middle","font-size":11,fill:"#5f6f7c"},"seats taken"));
-  for(let i=0;i<N;i++){
-    const a=i*2*Math.PI/N-Math.PI/2,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),it=q.arr[i];
-    const isF=it&&i===q.front;
-    svg.appendChild(el("circle",{cx:x,cy:y,r,fill:isF?"#fdf0dc":it?"#e6edf7":"#fff",stroke:isF?"#e8890c":it?"#14305a":"#d5dde5","stroke-width":2.5}));
-    if(r>=14){
-      svg.appendChild(el("text",{x,y:y+(it?-1:4),"text-anchor":"middle","font-size":it?Math.min(13,r*.55):9,"font-weight":700,fill:it?"#14305a":"#9aa8b3"},it?it.tk:i));
-      if(it&&r>=20)svg.appendChild(el("text",{x,y:y+11,"text-anchor":"middle","font-size":8.5,fill:"#5f6f7c"},it.name.slice(0,6)))}
-    const lab=[];if(i===q.front&&q.size)lab.push("F");if(i===q.rear&&q.size)lab.push("R");
-    if(lab.length&&N>1){const ox=cx+(R+r+14)*Math.cos(a),oy=cy+(R+r+14)*Math.sin(a);
-      svg.appendChild(el("text",{x:ox,y:oy+4,"text-anchor":"middle","font-size":12,"font-weight":800,fill:"#e8890c"},lab.join("/")))}}
-  $("ringNote").textContent="F = front, R = rear"}
+function parseRename(s){const m={};s.split(",").forEach(p=>{const [a,b]=p.split(":").map(x=>x&&x.trim());if(a&&b)m[a]=b});return m}
 
+// The pipeline (same steps as pandas)
+function process(data,emailCol,ren){
+  const key=data.rows.map(r=>String(r[emailCol]===undefined?"":r[emailCol]).trim().toLowerCase());
+  const seen=new Map(),status=[];
+  data.rows.forEach((r,i)=>{if(seen.has(key[i]))status.push({dup:true,of:seen.get(key[i])});else{seen.set(key[i],i);status.push({dup:false})}});
+  const kept=data.rows.filter((_,i)=>!status[i].dup);
+  const newCols=data.cols.map(c=>ren[c]||c);
+  const removed=data.rows.length-kept.length;
+  return{key,status,kept,newCols,removed,message:removed+" duplicate rows removed"}}
+
+let stage=0,data={cols:[],rows:[]},res=null;
+function toast(m){const t=$("toast");t.textContent=m;t.className="on";clearTimeout(toast.h);toast.h=setTimeout(()=>t.className="",1800)}
+
+function cell(td,v){ // show hidden spaces as red dots
+  const s=String(v),m=s.match(/^(\s*)([\s\S]*?)(\s*)$/);
+  const dots=n=>{const e=document.createElement("span");e.className="ws";e.textContent="\u00b7".repeat(n);return e};
+  if(m[1])td.appendChild(dots(m[1].length));
+  td.appendChild(document.createTextNode(m[2]));
+  if(m[3])td.appendChild(dots(m[3].length))}
+
+function load(){
+  data=parseCSV($("csv").value);
+  const sel=$("emailCol"),prev=sel.value;sel.innerHTML="";
+  data.cols.forEach(c=>{const o=document.createElement("option");o.value=o.textContent=c;sel.appendChild(o)});
+  sel.value=data.cols.includes(prev)?prev:(data.cols.find(c=>/mail/i.test(c))||data.cols[data.cols.length-1]||"");
+  update()}
+
+function update(){
+  const ren=parseRename($("ren").value),ec=$("emailCol").value;
+  res=data.cols.length&&ec?process(data,ec,ren):null;
+  render();code()}
+
+const STEPS=[["Create key","email.str.strip().str.lower()"],["Drop duplicates","drop_duplicates(subset=key, keep='first')"],["Rename columns","rename(columns={...})"],["Report","print removed count"]];
 function render(){
-  const q=S;
-  $("sFront").textContent=q.front;$("sRear").textContent=q.rear;$("sSize").textContent=q.size;$("sCap").textContent=q.cap;
-  const pc=Math.round(q.size/q.cap*100);$("occ").textContent=pc+"%";$("meter").style.width=pc+"%";
-  $("cIss").textContent=q.iss;$("cSrv").textContent=q.srv;$("cRej").textContent=q.rej;$("cNxt").textContent="T"+q.next;
-  const p=$("pill");p.className="pill"+(q.size===q.cap?" full":q.size?" open":"");
-  p.textContent=q.size===q.cap?"Hall full":q.size?"Open: "+q.size+" waiting":"Hall empty";
-  $("nowNum").textContent=q.last?q.last.tk:"--";$("nowWho").textContent=q.last?q.last.name:"Counter is free";
-  const nx=q.size?q.arr[q.front]:null;
-  $("nextUp").innerHTML="";
-  if(nx){$("nextUp").append("Next in line: ");const b=document.createElement("b");b.textContent=nx.tk+" ("+nx.name+")";$("nextUp").append(b)}else $("nextUp").textContent="No one waiting";
-  const tk=$("ticket");tk.innerHTML="";
-  const l=document.createElement("div");l.className="l";l.textContent=q.lastIssued?q.lastIssued.tk:"--";
-  const r=document.createElement("div");r.className="r";const b=document.createElement("b");
-  b.textContent=q.lastIssued?q.lastIssued.name:"No token issued yet";
-  r.append(b,q.lastIssued?"Last issued token":"Last issued token appears here.");tk.append(l,r);
-  const st=$("strip");st.innerHTML="";
-  q.arr.forEach((it,i)=>{const c=document.createElement("div");c.className="cell"+(it?" u":"")+(it&&i===q.front?" f":"");
-    const a=document.createElement("em");a.textContent="["+i+"]";
-    const t=document.createElement("span");t.className="t";t.textContent=[i===q.front&&q.size?"front":"",i===q.rear&&q.size?"rear":""].filter(Boolean).join("/");
-    const v=document.createElement("b");v.textContent=it?it.tk:"-";c.append(a,t,v);st.appendChild(c)});
-  renderRing()}
+  const st=$("steps");st.innerHTML="";
+  STEPS.forEach((s,i)=>{const d=document.createElement("div");d.className="step"+(stage>i+0?" done":"")+(stage===i&&stage<4?" now":"");
+    const b=document.createElement("b"),n=document.createElement("i");n.textContent=i+1;b.append(n,s[0]);
+    const c=document.createElement("code");c.textContent=s[1];d.append(b,c);st.appendChild(d)});
+  $("sIn").textContent=data.rows.length;
+  const done=res&&stage>=2;
+  $("sKeep").textContent=done?res.kept.length:"-";$("sRem").textContent=done?res.removed:"-";
+  $("sPct").textContent=done&&data.rows.length?Math.round(res.removed/data.rows.length*100)+"%":"-";
+  const m=$("msg");m.innerHTML="";
+  if(res&&stage>=4){m.textContent=res.message}else{const s=document.createElement("span");s.className="dim";s.textContent=res?'Press "Run pipeline" to see the result message.':"Add a CSV table with a header row to begin.";m.appendChild(s)}
+  $("next").disabled=!res||stage>=4;$("dl").disabled=!res||stage<2;$("cpMsg").disabled=!res||stage<4;
+  // before table
+  const bt=$("before");bt.innerHTML="";
+  if(res){
+    const h=document.createElement("tr");
+    const th=t=>{const e=document.createElement("th");e.textContent=t;return e};
+    h.appendChild(th("#"));data.cols.forEach(c=>h.appendChild(th(c)));
+    if(stage>=1)h.appendChild(th("key"));if(stage>=2)h.appendChild(th("status"));bt.appendChild(h);
+    data.rows.forEach((r,i)=>{const tr=document.createElement("tr");
+      const dup=stage>=2&&res.status[i].dup;if(dup)tr.className="dup";
+      const idx=document.createElement("td");idx.className="idx";idx.textContent=i;tr.appendChild(idx);
+      data.cols.forEach(c=>{const td=document.createElement("td");td.className="d";cell(td,r[c]);tr.appendChild(td)});
+      if(stage>=1){const td=document.createElement("td");td.className="d nodim";td.textContent=res.key[i];tr.appendChild(td)}
+      if(stage>=2){const td=document.createElement("td");td.className="st2";const g=document.createElement("span");
+        g.className="tag "+(dup?"x":"k");g.textContent=dup?"duplicate of #"+res.status[i].of:"keep";td.appendChild(g);tr.appendChild(td)}
+      bt.appendChild(tr)})}
+  // after table
+  const ab=$("afterBox");ab.innerHTML="";
+  if(res&&stage>=2){
+    const w=document.createElement("div");w.className="tw";const t=document.createElement("table");
+    const h=document.createElement("tr");const cols=stage>=3?res.newCols:data.cols;
+    cols.forEach(c=>{const e=document.createElement("th");e.textContent=c;h.appendChild(e)});t.appendChild(h);
+    res.kept.forEach(r=>{const tr=document.createElement("tr");
+      data.cols.forEach(c=>{const td=document.createElement("td");td.className="d";cell(td,r[c]);tr.appendChild(td)});t.appendChild(tr)});
+    w.appendChild(t);ab.appendChild(w)}
+  else{const e=document.createElement("div");e.className="empty";e.textContent="The cleaned table appears after step 2.";ab.appendChild(e)}}
 
-function flashNow(){const n=$("nowNum");n.classList.remove("flash");void n.offsetWidth;n.classList.add("flash")}
-function cmd(line){const res=S.exec(line);if(res===null)return;addLog(res);
-  if(kind(res)==="err")toast(res,true);render();return res}
+// Python code generator
+const py=s=>"'"+String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/\n/g,"\\n")+"'";
+function code(){
+  const out=$("py");out.textContent="";
+  if(!res){out.textContent="# Add data to see the code";return}
+  const ec=$("emailCol").value,ren=parseRename($("ren").value);
+  const lines=["import pandas as pd","","df = pd.DataFrame({"];
+  data.cols.forEach((c,i)=>lines.push("    "+py(c)+": ["+data.rows.map(r=>py(r[c])).join(", ")+"]"+(i<data.cols.length-1?",":"")));
+  lines.push("})","","# 1. normalised key","df['key'] = df["+py(ec)+"].str.strip().str.lower()","before = len(df)","",
+    "# 2. keep the first record of each customer","df = df.drop_duplicates(subset='key', keep='first')","",
+    "# 3. clear column names","df = df.rename(columns={"+Object.entries(ren).map(([a,b])=>py(a)+": "+py(b)).join(", ")+"}).drop(columns='key')","",
+    "# 4. report","print(df)","print(f\"{before - len(df)} duplicate rows removed\")");
+  out.textContent=lines.join("\n");out.dataset.t=lines.join("\n")}
 
-function createHall(){const n=+$("cap").value;S=new TokenQueue(n);logLines=[];$("log").innerHTML="";addLog("Hall created. capacity="+n);render()}
-$("cap").oninput=()=>$("capv").textContent=$("cap").value;
-$("create").onclick=createHall;
-$("issue").onclick=()=>{const n=$("name").value.trim();if(!n){toast("Enter the applicant's name first.",true);return}
-  cmd("ISSUE "+n);$("name").value="";$("name").focus()};
-$("name").addEventListener("keydown",e=>{if(e.key==="Enter")$("issue").click()});
-$("serve").onclick=()=>{const r=cmd("SERVE");if(r&&r.startsWith("Serving"))flashNow()};
-$("show").onclick=()=>cmd("SHOW");
-$("clear").onclick=()=>{logLines=[];$("log").innerHTML=""};
-$("copy").onclick=()=>{navigator.clipboard.writeText(logLines.join("\n")).then(()=>toast("Output copied."),()=>toast("Copy not available.",true))};
+// events
+$("csv").addEventListener("input",()=>{stage=0;load()});
+$("emailCol").onchange=()=>{stage=0;update()};
+$("ren").addEventListener("input",update);
+$("run").onclick=()=>{if(res){stage=4;render()}};
+$("next").onclick=()=>{if(res&&stage<4){stage++;render()}};
+$("reset").onclick=()=>{stage=0;render()};
+$("tc1").onclick=()=>{$("csv").value=TC1;$("ren").value="nm:name";stage=0;load()};
+$("tc2").onclick=()=>{$("csv").value=TC2;$("ren").value="nm:name";stage=0;load()};
+$("cpMsg").onclick=()=>navigator.clipboard.writeText(res.message).then(()=>toast("Message copied"),()=>toast("Copy not available"));
+$("cpCode").onclick=()=>navigator.clipboard.writeText($("py").dataset.t||"").then(()=>toast("Code copied"),()=>toast("Copy not available"));
+$("dl").onclick=()=>{
+  const q=v=>/[",\n]|^\s|\s$/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
+  const csv=[res.newCols.map(q).join(",")].concat(res.kept.map(r=>data.cols.map(c=>q(String(r[c]))).join(","))).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="cleaned_customers.csv";a.click();URL.revokeObjectURL(a.href)};
 
-function loadResult(r){
-  logLines=[];$("log").innerHTML="";
-  if(r.error){addLog(r.error);toast(r.error,true);return}
-  r.out.forEach(t=>{if(t!==null)addLog(t)});S=r.q;$("cap").value=S.cap;$("capv").textContent=S.cap;render();flashNow()}
-$("runBatch").onclick=()=>loadResult(runInput($("batch").value));
+// why section example
+(function(){const e=$("ex1");[" Ravi@X.com ","RAVI@x.com","ravi@x.com"].forEach((s,i)=>{if(i)e.append("  |  ");const sp=document.createElement("span");cell(sp,s);e.appendChild(sp)})})();
 
+// tests from the problem sheet
 const TESTS=[
- {n:"1. Hall fills up, one person served, a new person arrives (wrap-around)",i:"3\nISSUE a\nISSUE b\nISSUE c\nISSUE d\nSERVE\nISSUE e\nSHOW",
-  e:["Issued T1 to a","Issued T2 to b","Issued T3 to c","Queue full - cannot issue to d","Serving T1 (a)","Issued T4 to e","Queue: T2(b) T3(c) T4(e) | front=1 rear=0 size=3"]},
- {n:"2. Serve before anyone arrives",i:"2\nSERVE\nISSUE x\nSHOW\nSERVE\nSHOW",
-  e:["Queue empty","Issued T1 to x","Queue: T1(x) | front=0 rear=0 size=1","Serving T1 (x)","Queue: empty | front=-1 rear=-1 size=0"]},
- {n:"3. Hall of 4: indices wrap around",i:"4\nISSUE A\nISSUE B\nISSUE C\nISSUE D\nSERVE\nSERVE\nISSUE E\nISSUE F\nSHOW\nISSUE G",
-  e:["Issued T1 to A","Issued T2 to B","Issued T3 to C","Issued T4 to D","Serving T1 (A)","Serving T2 (B)","Issued T5 to E","Issued T6 to F","Queue: T3(C) T4(D) T5(E) T6(F) | front=2 rear=1 size=4","Queue full - cannot issue to G"]},
- {n:"4. Single-seat hall",i:"1\nISSUE a\nISSUE b\nSERVE\nISSUE c\nSHOW",
-  e:["Issued T1 to a","Queue full - cannot issue to b","Serving T1 (a)","Issued T2 to c","Queue: T2(c) | front=0 rear=0 size=1"]},
- {n:"5. Everyone served, then one extra serve call",i:"3\nISSUE a\nISSUE b\nISSUE c\nSERVE\nSERVE\nSERVE\nSERVE\nSHOW",
-  e:["Issued T1 to a","Issued T2 to b","Issued T3 to c","Serving T1 (a)","Serving T2 (b)","Serving T3 (c)","Queue empty","Queue: empty | front=-1 rear=-1 size=0"]}];
-const rows=[];
-function check(t,bd,df){
-  const r=runInput(t.i),bad=[];
-  if(r.error)bad.push(r.error);else{const m=Math.max(r.out.length,t.e.length);
-    for(let k=0;k<m;k++)if(r.out[k]!==t.e[k])bad.push("line "+(k+1)+"\n  expected: "+t.e[k]+"\n  got:      "+r.out[k])}
-  bd.textContent=bad.length?"FAIL":"PASS";bd.className="bd "+(bad.length?"fail":"pass");
-  df.textContent=bad.join("\n");df.style.display=bad.length?"block":"none";
-  return{r,ok:!bad.length}}
-function summary(){const d=rows.filter(x=>x.bd.textContent!=="-");
-  if(!d.length){$("sum").textContent="";return}
-  const p=d.filter(x=>x.bd.textContent==="PASS").length;$("sum").textContent=p+" / "+rows.length+" passed";
-  $("sum").style.color=p===rows.length?"var(--grn)":"var(--red)"}
-TESTS.forEach(t=>{
-  const row=document.createElement("div");row.className="test";
+ {n:"1. Duplicate Ravi rows with spaces and different case",csv:TC1,
+  check:r=>{const e=[];const names=r.kept.map(x=>x.nm).join(",");
+    if(names!=="Ravi,Priya,Sam")e.push("rows kept: expected Ravi,Priya,Sam got "+names);
+    if(!r.newCols.includes("name")||r.newCols.includes("nm"))e.push("column should be renamed nm -> name");
+    if(r.message!=="2 duplicate rows removed")e.push('message: expected "2 duplicate rows removed" got "'+r.message+'"');return e}},
+ {n:"2. All emails unique (3 rows)",csv:TC2,
+  check:r=>{const e=[];if(r.kept.length!==3)e.push("expected 3 rows kept, got "+r.kept.length);
+    if(r.message!=="0 duplicate rows removed")e.push('message: expected "0 duplicate rows removed" got "'+r.message+'"');return e}}];
+const trs=[];
+function runTest(t,bd,df){const d=parseCSV(t.csv),r=process(d,"email",{nm:"name"}),bad=t.check(r);
+  bd.textContent=bad.length?"FAIL":"PASS";bd.className="bd "+(bad.length?"f":"p");
+  df.textContent=bad.join("\n");df.style.display=bad.length?"block":"none";return !bad.length}
+function sum(){const d=trs.filter(x=>x.bd.textContent!=="-");if(!d.length)return;
+  const p=d.filter(x=>x.bd.textContent==="PASS").length;$("sum").textContent=p+" / "+trs.length+" passed";$("sum").style.color=p===trs.length?"var(--grn)":"var(--red)"}
+TESTS.forEach((t,i)=>{const row=document.createElement("div");row.className="test";
   const nm=document.createElement("div");nm.className="nm";nm.textContent=t.n;
   const bd=document.createElement("span");bd.className="bd";bd.textContent="-";
   const b=document.createElement("button");b.className="sec";b.textContent="Load and run";
-  const df=document.createElement("div");df.className="diff";df.style.display="none";
-  b.onclick=()=>{$("batch").value=t.i;const x=check(t,bd,df);summary();loadResult(x.r)};
-  row.append(nm,bd,b,df);$("tests").appendChild(row);rows.push({t,bd,df})});
-$("runAll").onclick=()=>{rows.forEach(x=>check(x.t,x.bd,x.df));summary();toast("Test run complete.")};
+  const df=document.createElement("div");df.className="diff mono";df.style.display="none";
+  b.onclick=()=>{runTest(t,bd,df);sum();$("csv").value=t.csv;$("ren").value="nm:name";load();stage=4;render();$("workspace").scrollIntoView({behavior:"smooth"})};
+  row.append(nm,bd,b,df);$("tlist").appendChild(row);trs.push({t,bd,df})});
+$("runAll").onclick=()=>{trs.forEach(x=>runTest(x.t,x.bd,x.df));sum();toast("Test run complete")};
 
-function tick(){const d=new Date();$("clk").textContent=d.toLocaleTimeString([], {hour12:false});
-  $("dt").textContent=d.toLocaleDateString([], {weekday:"short",day:"numeric",month:"short",year:"numeric"})}
-tick();setInterval(tick,1000);
-createHall();
+$("csv").value=TC1;load();
 </script>
 </body>
 </html>
